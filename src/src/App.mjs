@@ -1,6 +1,6 @@
-import Component from './core/Component.mjs';
-import ItemAppender from './components/ItemAppender.mjs';
-import Items from './components/items.mjs';
+import Component from "./core/Component.mjs";
+import ItemAppender from "./components/ItemAppender.mjs";
+import Items from "./components/items.mjs";
 
 export default class App extends Component {
   setup() {
@@ -9,7 +9,7 @@ export default class App extends Component {
     };
   }
 
-  markup() {
+  template() {
     const { items } = this.state;
     return `
     <div class="d-flex justify-center mt-5 w-100">
@@ -32,26 +32,33 @@ export default class App extends Component {
               <h2 class="mt-1">☕ 에스프레소 메뉴 관리</h2>
               <span class="mr-2 mt-4 menu-count">총 ${items.length}개</span>
             </div>
-            <form id="espresso-menu-form"></form>
-            <ul id="espresso-menu-list" class="mt-3 pl-0"></ul>
+            <form id="espresso-menu-form" data-component-name="ItemAppender" data-key="1"></form>
+            <ul id="espresso-menu-list" class="mt-3 pl-0" data-component-name="Items" data-key="2"></ul>
           </div>
         </main>
       </div>
     </div>
-    `
+    `;
   }
 
-  afterMount() {
+  generateChildComponent(name) {
     const { addItem, editItem, removeItem } = this;
     const { items } = this.state;
-    new Items(this.target.querySelector("#espresso-menu-list"), {
-      items,
-      editItem: editItem.bind(this),
-      removeItem: removeItem.bind(this),
-    })
-    new ItemAppender(this.target.querySelector("#espresso-menu-form"), {
-      addItem: addItem.bind(this),
-    });
+    if (name === "Items") {
+      return new Items(this.target.querySelector("#espresso-menu-list"), () => {
+        return {
+          items,
+          editItem: editItem.bind(this),
+          removeItem: removeItem.bind(this),
+        };
+      });
+    } else if (name === "ItemAppender") {
+      return new ItemAppender(this.target.querySelector("#espresso-menu-form"), () => {
+        return {
+          addItem: addItem.bind(this),
+        };
+      });
+    }
   }
 
   addItem(newItemName) {
