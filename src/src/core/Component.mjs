@@ -38,7 +38,6 @@ export default class Component {
       childComponentData = { ...childComponentData, ...updateElement(target, newChildNodes[i], oldChildNodes[i]) };
     }
     adjustChildComponents(this, childComponentData);
-
     for (let childComponent of Object.values(this.childComponents)) {
       childComponent.updateProps();
       childComponent.render();
@@ -69,6 +68,8 @@ export default class Component {
       this.target.removeEventListener(eventType, listener);
     }
     this.attacthedEventListeners = [];
+    const childComponents = Object.values(this.childComponents)
+    for (let childComponent of childComponents) childComponent.removeAllEventListener();
   }
 
   setState(newState) {
