@@ -4,12 +4,12 @@ import Menu from "./pages/Menu.mjs";
 export default class App extends Component {
   setup() {
     this.state = {
-      selectedMenuName: "espresso",
+      currentCategory: "espresso",
     };
   }
 
   template() {
-    const { selectedMenuName } = this.state;
+    const { currentCategory } = this.state;
     return `
     <div class="d-flex justify-center mt-5 w-100">
       <div class="w-100">
@@ -25,19 +25,19 @@ export default class App extends Component {
             <button data-category-name="desert" class="cafe-category-name btn bg-white shadow mx-1">🍰 디저트</button>
           </nav>
         </header>
-        <div class=${selectedMenuName} data-component-name=${selectedMenuName} data-key="${selectedMenuName}" ></div>
+        <div class=${currentCategory} data-component-name=${currentCategory} data-key="${currentCategory}" ></div>
       </div>
     </div>
     `;
   }
 
   generateChildComponent(name, key) {
-    const { selectedMenuName } = this.state;
+    const { currentCategory } = this.state;
     if (name === "espresso") {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "☕ 에스프레소 메뉴 관리",
-          englishMenuName: selectedMenuName,
+          category: currentCategory,
         };
       });
     }
@@ -45,7 +45,7 @@ export default class App extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🥤 프라푸치노 메뉴 관리",
-          englishMenuName: selectedMenuName,
+          category: currentCategory,
         };
       });
     }
@@ -53,7 +53,7 @@ export default class App extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🍹 블렌디드 메뉴 관리",
-          englishMenuName: selectedMenuName,
+          category: currentCategory,
         };
       });
     }
@@ -61,7 +61,7 @@ export default class App extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🫖 티바나 메뉴 관리",
-          englishMenuName: selectedMenuName,
+          category: currentCategory,
         };
       });
     }
@@ -69,7 +69,7 @@ export default class App extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🍰 디저트 메뉴 관리",
-          englishMenuName: selectedMenuName,
+          category: currentCategory,
         };
       });
     }
@@ -77,8 +77,8 @@ export default class App extends Component {
 
   setEvents() {
     this.addEventListener("click", ".cafe-category-name", (e) => {
-      const selectedMenuName = e.target.dataset.categoryName;
-      this.setState({ selectedMenuName });
+      const selectedCategory = e.target.dataset.categoryName;
+      this.setState({ currentCategory: selectedCategory });
     })
   }
 }

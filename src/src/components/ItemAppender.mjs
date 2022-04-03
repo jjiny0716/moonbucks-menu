@@ -19,10 +19,10 @@ export default class ItemAppender extends Component {
   }
 
   setEvents() {
-    const { englishMenuName, addItem } = this.props;
+    const { category, addItem } = this.props;
     const inputField = this.target.querySelector("#menu-name");
 
-    this.addEventListener("submit", `#${englishMenuName}-menu-form`, (e) => {
+    this.addEventListener("submit", `#${category}-menu-form`, (e) => {
       e.preventDefault();
     });
     this.addEventListener("keydown", "#menu-name", (e) => {

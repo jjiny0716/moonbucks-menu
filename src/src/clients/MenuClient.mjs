@@ -13,7 +13,6 @@ export default class MenuClient {
         },
         body,
       });
-      console.log(response);
       return response;
     } catch {
       alert("오류가 발생했습니다.");
