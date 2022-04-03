@@ -22,7 +22,7 @@ export default class App extends Component {
             <button data-category-name="frappuccino" class="cafe-category-name btn bg-white shadow mx-1">🥤 프라푸치노</button>
             <button data-category-name="blended" class="cafe-category-name btn bg-white shadow mx-1">🍹 블렌디드</button>
             <button data-category-name="teavana" class="cafe-category-name btn bg-white shadow mx-1">🫖 티바나</button>
-            <button data-category-name="dessert" class="cafe-category-name btn bg-white shadow mx-1">🍰 디저트</button>
+            <button data-category-name="desert" class="cafe-category-name btn bg-white shadow mx-1">🍰 디저트</button>
           </nav>
         </header>
         <div class=${selectedMenuName} data-component-name=${selectedMenuName} data-key="${selectedMenuName}" ></div>
@@ -65,7 +65,7 @@ export default class App extends Component {
         };
       });
     }
-    else if (name === "dessert") {
+    else if (name === "desert") {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🍰 디저트 메뉴 관리",

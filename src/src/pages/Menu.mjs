@@ -1,14 +1,22 @@
 import Component from "../core/Component.mjs";
+import MenuClient from '../clients/MenuClient.mjs';
 import ItemAppender from "../components/ItemAppender.mjs";
 import Items from "../components/items.mjs";
 
 export default class Menu extends Component {
   setup() {
-    const { englishMenuName } = this.props;
-    const items = JSON.parse(localStorage.getItem(`${englishMenuName}-menu-items`)) ?? [] 
+    this.menuClient = new MenuClient();
+    const items = [];
     this.state = {
       items,
     };
+    this.loadItems();
+  }
+
+  async loadItems() {
+    const { englishMenuName } = this.props;
+    const items = await this.menuClient.getMenuByCetegory(englishMenuName);
+    this.setState({ items });
   }
 
   template() {
@@ -31,9 +39,9 @@ export default class Menu extends Component {
   generateChildComponent(name) {
     const { editItem, removeItem, toggleItemSoldOut, addItem } = this;
     const { englishMenuName } = this.props;
-    const { items } = this.state;
     if (name === "Items") {
       return new Items(this.target.querySelector(`#${englishMenuName}-menu-list`), () => {
+        const { items } = this.state;
         return {
           items,
           editItem: editItem.bind(this),
@@ -51,41 +59,48 @@ export default class Menu extends Component {
     }
   }
 
-  afterUpdate() {
-    const { englishMenuName } = this.props;
-    const { items } = this.state
-    localStorage.setItem(`${englishMenuName}-menu-items`, JSON.stringify(items));
-  }
-
-  addItem(newItemName) {
+  async addItem(newItemName) {
     if (!newItemName) {
       alert("값을 입력해주세요");
       return;
     }
 
+    const { englishMenuName } = this.props;
     const { items } = this.state;
-    items.push({ name: newItemName, soldOut: false});
+    if (items.find(({name}) => name === newItemName)) {
+      alert("이미 있는 메뉴입니다!");
+      return;
+    }
+    const item = await this.menuClient.storeMenu(newItemName, englishMenuName);
+
+    items.push(item);
     this.setState({ items });
   }
 
-  editItem(index) {
+  async editItem(index) {
+    const { englishMenuName } = this.props;
     const { items } = this.state;
     const newName = prompt("메뉴명을 수정하세요", items[index].name);
-    items[index].name = newName;
+    const updatedItem = await this.menuClient.editMenuName(newName, englishMenuName, items[index].id);
+    items[index] = updatedItem;
     this.setState({ items });
   }
 
   removeItem(index) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
+    const { englishMenuName } = this.props;
     const { items } = this.state;
-    items.splice(index, 1);
+    const { id: menuId } = items.splice(index, 1)[0];
     this.setState({ items });
+    this.menuClient.removeItem(englishMenuName, menuId);
   }
 
-  toggleItemSoldOut(index) {
+  async toggleItemSoldOut(index) {
+    const { englishMenuName } = this.props;
     const { items } = this.state;
-    items[index].soldOut = !items[index].soldOut;
+    const updatedItem = await this.menuClient.toggleItemSoldOut(englishMenuName, items[index].id);
+    items[index] = updatedItem;
     this.setState({ items });
   }
 }
