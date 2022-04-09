@@ -1,9 +1,10 @@
-import ComponentError from './ComponentError.mjs';
+import { ComponentError } from './ComponentError.mjs';
 
 export function adjustChildComponents(parent, childComponentData) {
   const { childComponents } = parent; 
   for (let key of Object.keys(childComponents)) {
     if (childComponentData[key]) {
+      childComponents[key].update();
       delete childComponentData[key];
     }
     else {

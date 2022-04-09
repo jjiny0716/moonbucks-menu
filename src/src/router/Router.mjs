@@ -1,14 +1,16 @@
+import { observable } from '../core/observer.mjs';
+
 export default class Router {
   constructor(baseURL = '/', routes) {
     this.baseURL = baseURL.replace(/^\/?/, '/').replace(/\/$/, '');
-    this.currentRoute = '/';
+    this.currentRoute = observable({ value: '/' });
     this.routes = routes;
     this.updateListeners = [];
     this.setup();
   }
 
-  route() {
-    return this.routes[this.currentRoute];
+  get route() {
+    return this.routes[this.currentRoute.value];
   }
 
   setup() {
@@ -20,7 +22,7 @@ export default class Router {
   }
 
   updateRouter() {
-    this.currentRoute = location.pathname.replace(this.baseURL, "");
+    this.currentRoute.value = location.pathname.replace(this.baseURL, "");
     this.updateListeners.forEach(callback => callback());
   }
 

@@ -1,12 +1,10 @@
-import Component from './Component.mjs';
-
 function updateAttributes(oldNode, newNode) {
   for (const {name, value} of [ ...newNode.attributes ]) {
     if (value === oldNode.getAttribute(name)) continue;
     oldNode.setAttribute(name, value);
   }
   for (const {name} of [ ...oldNode.attributes ]) {
-    if (newNode.getAttribute(name) !== undefined) continue;
+    if (newNode.hasAttribute(name)) continue;
     oldNode.removeAttribute(name);
   }
 }
@@ -38,9 +36,8 @@ export function updateElement (parent, newNode, oldNode) {
     return;
   }
   if (newNode.nodeName !== oldNode.nodeName) {
-    const index = [ ...parent.childNodes ].indexOf(oldNode);
+    parent.insertBefore(newNode, oldNode);
     oldNode.remove();
-    parent.appendChild(newNode, index);
     return;
   }
   updateAttributes(oldNode, newNode);

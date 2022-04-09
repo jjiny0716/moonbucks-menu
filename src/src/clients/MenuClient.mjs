@@ -13,9 +13,13 @@ export default class MenuClient {
         },
         body,
       });
+      if (!response.ok) {
+        if (response.status === 400) throw new Error("올바르지 않은 입력입니다."); 
+        throw new Error("오류가 발생했습니다.");
+      }
       return response;
-    } catch {
-      alert("오류가 발생했습니다.");
+    } catch(e) {
+      alert(e.message);
     }
   }
 

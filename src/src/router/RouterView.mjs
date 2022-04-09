@@ -4,27 +4,28 @@ import Menu from '../pages/Menu.mjs';
 
 export default class RouterView extends Component {
   setup() {
-    router.addUpdateListener(this.updateCategory.bind(this));
     this.state = {
-      currentCategory: router.route(),
+      currentCategory: router.route,
     }
   }
 
   template() {
-    const { currentCategory } = this.state;
+    const { route } = router; 
+    if (!route) return `
+      <p>페이지를 찾을 수 없습니다.</p>
+    `
+
     return `
-    <div class=${currentCategory} data-component-name=${currentCategory} data-key="${currentCategory}" ></div>
+    <div data-component-name=${route} data-key="${route}" ></div>
     `;
   }
 
   generateChildComponent(name, key) {
-    let { currentCategory } = this.state;
-    currentCategory = currentCategory.toLowerCase();
     if (name === "Espresso") {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "☕ 에스프레소 메뉴 관리",
-          category: currentCategory,
+          category: "espresso",
         };
       });
     }
@@ -32,7 +33,7 @@ export default class RouterView extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🥤 프라푸치노 메뉴 관리",
-          category: currentCategory,
+          category: "frappuccino",
         };
       });
     }
@@ -40,7 +41,7 @@ export default class RouterView extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🍹 블렌디드 메뉴 관리",
-          category: currentCategory,
+          category: "blended",
         };
       });
     }
@@ -48,7 +49,7 @@ export default class RouterView extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🫖 티바나 메뉴 관리",
-          category: currentCategory,
+          category: "teavana",
         };
       });
     }
@@ -56,13 +57,9 @@ export default class RouterView extends Component {
       return new Menu(this.target.querySelector(`[data-key="${key}"]`), () => {
         return {
           title: "🍰 디저트 메뉴 관리",
-          category: currentCategory,
+          category: "desert",
         };
       });
     }
-  }
-
-  updateCategory() {
-    this.setState({ currentCategory: router.route() });
   }
 }
